@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {inject} from "mobx-react";
 
 class InitForm extends Component {
 
@@ -7,9 +6,9 @@ class InitForm extends Component {
         return (
             <form action="#" onSubmit={this.handleSubmit}>
                 <label>url</label>
-                <input type="text" value={this.props.url} onChange={e => this.props.setUrl(e.target.value)}/>
+                <input type="text" value={this.props.api.url} onChange={e => this.props.api.url=e.target.value}/>
                 <label>key</label>
-                <input type="text" value={this.props.key} onChange={e => this.props.setKey(e.target.value)}/>
+                <input type="text" value={this.props.api.key} onChange={e => this.props.api.key=e.target.value}/>
 
             </form>
         )
@@ -17,10 +16,4 @@ class InitForm extends Component {
 
 }
 
-export default inject(stores => (
-    {
-        setKey: stores.apiStore.setKey,
-        setUrl: stores.apiStore.setUrl,
-        url: stores.apiStore.api.url,
-        key: stores.apiStore.api.key
-    }))(InitForm)
+export default InitForm

@@ -1,50 +1,59 @@
 import React, {Component} from 'react';
 import './App.css';
-import {observer, inject} from "mobx-react";
+import {observer} from "mobx-react";
 import InitForm from './InitForm'
 import moment from 'moment'
+import {ApiStore} from "./store";
 
-let ShowItems = (props) => {
+let ShowItems = observer((props) => {
     return (<table>
-        {props.items.map(e =>
+        <tbody>
+        {props.items.sort((a, b) => a.event_time - b.event_time).map(e =>
             <tr key={e.event_time}>
-                <td>{moment(e.event_time).toString()}</td>
+                <td>{moment(e.event_time).format('YYYY-MM-DD HH:mm:ss')}</td>
                 <td>{e.event_type} </td>
-                <td>{e.lat} </td>
-                <td>{e.lon} </td>
+                <td>{e.lat && e.lon && <a href={"https://www.google.com/maps/?q=" + e.lat + "," + e.lon}>map</a>}</td>
             </tr>)}
+        </tbody>
     </table>)
-}
+})
 
 class App extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.onTypeChanged = this.onTypeChanged.bind(this)
+        this.store = new ApiStore()
     }
 
     onTypeChanged(e) {
-        this.props.api.type = e.target.value
-        this.props.fetch()
+        this.store.api.types[e.target.name] =!this.store.api.types[e.target.name]
     }
 
     render() {
-        if (this.props.isInititialized()) {
+        if (this.store.isInititialized()) {
 
             return (
+
                 <div className="App">
                     <h1>Event List</h1>
-                    <select onChange={this.onTypeChanged} value={this.props.api.type}>
-                        {this.props.eventTypes.map(e => <option value={e}>{e}</option>)}
-                    </select>
-                    <ShowItems items={this.props.results}/>
+                    <div>
+                        {Object.keys(this.store.api.types).map(e => <span>
+                            <input type="checkbox" name={e} checked={this.store.api.types[e]}
+                                   onChange={this.onTypeChanged}/>
+                            <label>{e}</label>
+                        </span>)}
+                    </div>
+                    <span>{this.store.results.length}</span>
+                    <ShowItems items={this.store.results}/>
                 </div>
+
             );
         } else {
-            return <InitForm/>
+            return <InitForm api={this.store.api}/>
         }
 
     }
 }
 
-export default inject(stores => stores.apiStore)(observer(App));
+export default observer(App);
