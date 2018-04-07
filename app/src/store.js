@@ -1,71 +1,83 @@
-import {observable, decorate, toJS, autorun} from 'mobx'
+import React, {Component} from "react";
 
-export class ApiStore {
-    api = {
-        url: undefined,
-        key: undefined,
-        types: {
-            ifttt_button: false,
-            ifttt_entered: false,
-            test: true
-        }
-    }
 
-    results = []
+const {Provider, Consumer} = React.createContext();
+
+export class ApiStore extends Component {
 
     constructor() {
+        super()
+
+        let api = {
+            url: undefined,
+            key: undefined,
+            types: {
+                ifttt_button: false,
+                ifttt_entered: false,
+                test: true
+            }
+        }
+
+        let results = []
 
         let localStorage = window.localStorage.getItem("api");
         if (localStorage) {
             let parse = JSON.parse(localStorage);
-            this.api.url = parse.url
-            this.api.key = parse.key
+            api.url = parse.url
+            api.key = parse.key
         }
 
-        let api = this.api
-        autorun(() => {
-            window.localStorage.setItem("api", JSON.stringify(toJS(api)))
-        })
-
-        let results = this.results
-        autorun(() => {
-
-            results.clear()
-            Object.keys(api.types).forEach(e => {
-                if (api.types[e] && this.isInititialized()) {
-                    this.fetchType(e).then(r => {
-                        r.result.forEach(e => results.push(e))
-                    })
-                }
-            })
-        })
-
-
         this.isInititialized = this.isInititialized.bind(this)
+        this.toggleType = this.toggleType.bind(this)
+
+        this.state = {
+            results: results,
+            api: api,
+            isInititialized: this.isInititialized,
+            toggleType: this.toggleType
+        }
+
     }
 
+    toggleType(name) {
+        if (this.state.api.types[name]) {
+            this.setState({results: this.state.results.filter(r => r.event_type !== name)})
+        } else {
+            this.fetchType(name).then(r => {
+                this.setState({results: r.result.concat(this.state.results)})
+            })
+        }
+        this.setState((prev) => {
+            let api = prev.api
+            api.types[name] = !api.types[name]
+            return {api: api}
+        })
+
+    }
 
     isInititialized() {
-        return this.api.key && this.api.url;
+        return this.state.api.key && this.state.api.url;
     }
 
 
     fetchType(type) {
-        return fetch(this.api.url + type,
+        return fetch(this.state.api.url + type,
             {
                 headers: {
-                    'x-api-key': this.api.key
+                    'x-api-key': this.state.api.key
                 }
             })
             .then(r => r.json());
     }
+
+    render() {
+        return (
+            <Provider value={this.state}>
+                {this.props.children}
+            </Provider>
+
+        )
+    }
 }
 
-decorate(ApiStore, {
-    api: observable,
-    type: observable,
-    results: observable
-})
-
-
-export default ApiStore
+export default {Consumer, ApiStore};

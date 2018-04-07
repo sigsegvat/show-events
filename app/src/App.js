@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import './App.css';
-import {observer} from "mobx-react";
 import InitForm from './InitForm'
 import moment from 'moment'
-import {ApiStore} from "./store";
+import Store, {ApiStore} from "./store";
 
-let ShowItems = observer((props) => {
+
+let ShowItems = (props) => {
     return (<table>
         <tbody>
         {props.items.sort((a, b) => a.event_time - b.event_time).map(e =>
@@ -16,44 +16,42 @@ let ShowItems = observer((props) => {
             </tr>)}
         </tbody>
     </table>)
-})
+}
 
 class App extends Component {
 
     constructor(props) {
         super(props)
-        this.onTypeChanged = this.onTypeChanged.bind(this)
-        this.store = new ApiStore()
-    }
-
-    onTypeChanged(e) {
-        this.store.api.types[e.target.name] =!this.store.api.types[e.target.name]
     }
 
     render() {
-        if (this.store.isInititialized()) {
-
-            return (
-
-                <div className="App">
-                    <h1>Event List</h1>
-                    <div>
-                        {Object.keys(this.store.api.types).map(e => <span>
-                            <input type="checkbox" name={e} checked={this.store.api.types[e]}
-                                   onChange={this.onTypeChanged}/>
+        return <Store.ApiStore>
+            <Store.Consumer>
+                {({isInititialized, api, results, toggleType}) => {
+                    if (isInititialized()) {
+                        return (<div className="App">
+                            <h1>Event List</h1>
+                            <div>
+                                {Object.keys(api.types).map(e => <span>
+                            <input type="checkbox" name={e} checked={api.types[e]}
+                                   onChange={(e) => toggleType(e.target.name)}/>
                             <label>{e}</label>
                         </span>)}
-                    </div>
-                    <span>{this.store.results.length}</span>
-                    <ShowItems items={this.store.results}/>
-                </div>
+                            </div>
+                            <span>{results.length}</span>
+                            <ShowItems items={results}/>
+                        </div>)
+                    }
+                    else {
+                        return <InitForm api={api}/>
+                    }
 
-            );
-        } else {
-            return <InitForm api={this.store.api}/>
-        }
-
+                }
+                }
+            </Store.Consumer>
+        </Store.ApiStore>
     }
 }
 
-export default observer(App);
+export default App
+
