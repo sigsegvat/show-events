@@ -1,0 +1,8 @@
+{
+  "name": "Show Events",
+  "short_name": "Show Events",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "Lists Events"
+}
