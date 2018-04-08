@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import InitForm from './InitForm'
 import 'gestalt/dist/gestalt.css';
-import {Box, Link, Icon, Divider, Checkbox, Label, Text, Heading, Column} from 'gestalt'
+import {Box, Spinner, Text} from 'gestalt'
 import moment from 'moment'
 import ShowItems from "./ShowItems"
 
@@ -30,6 +30,7 @@ export default class App extends Component {
 
         this.isInititialized = this.isInititialized.bind(this)
         this.getResultsByDate = this.getResultsByDate.bind(this)
+        this.fetchResult = this.fetchResult.bind(this)
 
         this.state = {
             results: results,
@@ -38,7 +39,7 @@ export default class App extends Component {
             getResultsByDate: this.getResultsByDate
         }
 
-        this.fetchResult()
+        setTimeout(this.fetchResult,400)
 
 
     }
@@ -91,6 +92,7 @@ export default class App extends Component {
             <Provider value={this.state}>
                 <Box justifyContent="center" padding={3}>
                     <ShowItems/>
+                    <Loading show={this.state.results.length === 0}/>
                 </Box>
             </Provider>
 
@@ -98,4 +100,7 @@ export default class App extends Component {
     }
 }
 
-
+let Loading = (props) => <Box display={props.show ? 'flex' : 'none'} alignItems="center" justifyContent="center">
+    <Box padding={2}><Text size="lg">Loading</Text></Box>
+    <Spinner show={true}/>
+</Box>

@@ -6,7 +6,6 @@ import {Consumer} from "./App";
 
 
 let TimeOfDay = (t) => {
-
     let exited = (t.type === 'ifttt_exited');
     return <Box display="flex" justifyContent="end" alignItems="center"
                 shape={exited ? "roundedRight" : "roundedLeft"}
@@ -33,8 +32,10 @@ let ShowItems = (props) => {
                         </Column>
                         <Column>
                             <Box display="flex">
-                                {resultsByDate[e].map(t => <div key={e+t.time}><TimeOfDay type={t.type} time={t.time}
-                                                                                   elapsed={t.elapsed}/></div>)}
+                                {resultsByDate[e].map(t => <div key={e + t.time}>
+                                    <TimeOfDay type={t.type} time={t.time}
+                                               elapsed={t.elapsed}/>
+                                </div>)}
                             </Box>
                         </Column>
                     </Box>)}
