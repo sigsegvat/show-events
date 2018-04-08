@@ -6,6 +6,8 @@
   "browser_action": {
     "default_title": "Events"
   },
+  "icons": {
+    "48": "favicon-48.png" },
   "background": {
     "page": "background.html"
   },

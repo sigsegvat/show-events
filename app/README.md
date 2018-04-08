@@ -1809,7 +1809,7 @@ import { unregister } from './registerServiceWorker';
 ```
 and then call `unregister()` instead.
 After the user visits a page that has `unregister()`,
-the service worker will be uninstalled. Note that depending on how `/service-worker.js` is served,
+the service worker will be uninstalled. Note that depending on how `/worker.js` is served,
 it may take up to 24 hours for the cache to be invalidated.
 
 ### Offline-First Considerations
@@ -1838,11 +1838,11 @@ instructions for using other methods. *Be sure to always use an
 incognito window to avoid complications with your browser cache.*
 
 1. If possible, configure your production environment to serve the generated
-`service-worker.js` [with HTTP caching disabled](http://stackoverflow.com/questions/38843970/service-worker-javascript-update-frequency-every-24-hours).
+`worker.js` [with HTTP caching disabled](http://stackoverflow.com/questions/38843970/service-worker-javascript-update-frequency-every-24-hours).
 If that's not possible—[GitHub Pages](#github-pages), for instance, does not
 allow you to change the default 10 minute HTTP cache lifetime—then be aware
 that if you visit your production site, and then revisit again before
-`service-worker.js` has expired from your HTTP cache, you'll continue to get
+`worker.js` has expired from your HTTP cache, you'll continue to get
 the previously cached assets from the service worker. If you have an immediate
 need to view your updated production deployment, performing a shift-refresh
 will temporarily disable the service worker and retrieve all assets from the
@@ -2089,14 +2089,14 @@ Then run the `firebase init` command from your project’s root. You need to cho
     ✔  Firebase initialization complete!
 ```
 
-IMPORTANT: you need to set proper HTTP caching headers for `service-worker.js` file in `firebase.json` file or you will not be able to see changes after first deployment ([issue #2440](https://github.com/facebookincubator/create-react-app/issues/2440)). It should be added inside `"hosting"` key like next:
+IMPORTANT: you need to set proper HTTP caching headers for `worker.js` file in `firebase.json` file or you will not be able to see changes after first deployment ([issue #2440](https://github.com/facebookincubator/create-react-app/issues/2440)). It should be added inside `"hosting"` key like next:
 
 ```
 {
   "hosting": {
     ...
     "headers": [
-      {"source": "/service-worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}]}
+      {"source": "/worker.js", "headers": [{"key": "Cache-Control", "value": "no-cache"}]}
     ]
     ...
 ```

@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
-import './App.css';
-import InitForm from './InitForm'
 import 'gestalt/dist/gestalt.css';
 import {Box, Spinner, Text} from 'gestalt'
-import moment from 'moment'
 import ShowItems from "./ShowItems"
 
 const {Provider, Consumer} = React.createContext();
@@ -29,17 +26,15 @@ export default class App extends Component {
         }
 
         this.isInititialized = this.isInititialized.bind(this)
-        this.getResultsByDate = this.getResultsByDate.bind(this)
         this.fetchResult = this.fetchResult.bind(this)
 
         this.state = {
             results: results,
             api: api,
-            isInititialized: this.isInititialized,
-            getResultsByDate: this.getResultsByDate
+            isInititialized: this.isInititialized
         }
 
-        setTimeout(this.fetchResult,400)
+        setTimeout(this.fetchResult, 400)
 
 
     }
@@ -60,22 +55,6 @@ export default class App extends Component {
 
     }
 
-    getResultsByDate() {
-        return this.state.results.reduce((map, current) => {
-            let month = moment(current.event_time).format('DD.MM.')
-            let time = moment(current.event_time).format('HH:mm')
-            let day = (parseInt(moment(current.event_time).format('HH')) +
-                parseInt(moment(current.event_time).format('mm')) / 60) / 8
-            if (!map) {
-                map = {}
-            }
-            if (!map[month]) {
-                map[month] = []
-            }
-            map[month] = map[month].concat({type: current.event_type, time: time, elapsed: day})
-            return map
-        }, {})
-    }
 
     fetchType(type) {
         return fetch(this.state.api.url + type,
@@ -90,7 +69,7 @@ export default class App extends Component {
     render() {
         return (
             <Provider value={this.state}>
-                <Box justifyContent="center" padding={3}>
+                <Box justifyContent="center" padding={3} minWidth={200}>
                     <ShowItems/>
                     <Loading show={this.state.results.length === 0}/>
                 </Box>
