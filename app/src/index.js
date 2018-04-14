@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import registerServiceWorker from './register-serviceworker.js';
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/worker.js')
@@ -11,5 +12,7 @@ if ('serviceWorker' in navigator) {
             console.log('Service worker registration failed, error:', error);
         });
 }
+
+registerServiceWorker()
 
 ReactDOM.render(<App/>, document.getElementById('root'));
