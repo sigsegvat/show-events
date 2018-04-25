@@ -1,18 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import registerServiceWorker from './register-serviceworker.js';
+import {auth, getEvents} from './AWS'
+
 
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/worker.js')
-        .then(function (registration) {
-            console.log('Registration successful, scope is:', registration.scope);
-        })
-        .catch(function (error) {
-            console.log('Service worker registration failed, error:', error);
-        });
+  // Use the window load event to keep the page load performant
+  window.addEventListener('load', () => {
+    //navigator.serviceWorker.register('/sw.js');
+  });
 }
-
-registerServiceWorker()
 
 ReactDOM.render(<App/>, document.getElementById('root'));

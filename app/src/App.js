@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import 'gestalt/dist/gestalt.css'
 import { Box, Spinner, Text } from 'gestalt'
 import ShowItems from './ShowItems'
-import InitForm from './InitForm'
+import LoginForm from './LoginForm'
+import AwsApi from './AWS'
 
 const {Provider, Consumer} = React.createContext()
 export { Consumer }
@@ -12,61 +13,47 @@ export default class App extends Component {
   constructor () {
     super()
 
-    let api = {}
-
-    let results = []
-
-    let localStorage = window.localStorage.getItem('api')
-    if (localStorage) {
-      let parse = JSON.parse(localStorage)
-      api.url = parse.url
-      api.key = parse.key
-    }
-
-    this.fetchResult = this.fetchResult.bind(this)
-    this.fetchType = this.fetchType.bind(this)
-
-    let setApi = (api) => {
-      this.setState({api: api})
-      window.localStorage.setItem('api', JSON.stringify(api))
-    }
-
     this.state = {
-      results: results,
-      api: api,
-      error: false,
-      initialized: true,
-      setApi: setApi,
-      fetchResult: this.fetchResult
+      results: [],
+      initialized: false,
     }
 
-    this.fetchResult()
+    this.fetchResults = this.fetchResults.bind(this)
+    this.onLoginSuccess = this.onLoginSuccess.bind(this)
+
+    if (this.state.initialized) {
+      this.fetchResults()
+    }
 
   }
 
-  fetchResult () {
-    return this.fetchType('ifttt_entered').then(r => {
-      let results = this.state.results.concat(r.result).sort((a, b) => a.event_time - b.event_time)
-      this.setState({results: results})
-    }).then(() => {
-      return this.fetchType('ifttt_exited').then(r => {
-        let results = this.state.results.concat(r.result).sort((a, b) => a.event_time - b.event_time)
-        this.setState({results: results})
-      })
-    }).then(() => {
-      this.setState({initialized: true})
-    }).catch(() => this.setState({initialized: false}))
-
+  onLoginSuccess() {
+    this.setState({initialized: true})
+    this.fetchResults()
   }
 
-  fetchType (type) {
-    return fetch(this.state.api.url + type,
-      {
-        headers: {
-          'x-api-key': this.state.api.key
-        }
+  fetchResults () {
+
+    let onFulfilled = (r) => {
+      return r.Items.map((i) => {
+        return {event_time: parseInt(i.event_time.N), event_type: i.event_type.S}
       })
-      .then(r => r.json())
+    }
+
+    let _app = this
+    let onRejected = (r) => {
+
+    }
+
+    let r1 = AwsApi.getEvents('ifttt_exited').then(onFulfilled, onRejected)
+    let r2 = AwsApi.getEvents('ifttt_entered').then(onFulfilled, onRejected)
+
+    Promise.all([r1, r2]).then(([entered, exited]) => {
+      _app.setState({
+        results: entered.concat(exited).sort((a,b)=>a.event_time-b.event_time)
+      })
+    })
+
   }
 
   render () {
@@ -80,10 +67,11 @@ export default class App extends Component {
           </Box>
           }
           {!this.state.initialized &&
-          <Box display={this.state.initialized ? 'none' : 'block'}>
-            <InitForm/>
+          <Box display="block">
+            <LoginForm onSuccess={this.onLoginSuccess}/>
           </Box>
           }
+
         </Box>
       </Provider>
 
@@ -93,5 +81,5 @@ export default class App extends Component {
 
 let Loading = (props) => <Box display={props.show ? 'flex' : 'none'} alignItems="center" justifyContent="center">
   <Box padding={2}><Text size="lg">Loading</Text></Box>
-  <Spinner show={true}/>
+  <Spinner show={true} accessibilityLabel="spinner"/>
 </Box>

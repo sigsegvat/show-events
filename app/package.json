@@ -4,6 +4,8 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "amazon-cognito-identity-js": "^2.0.3",
+    "aws-sdk": "^2.224.1",
     "gestalt": "^0.63.0",
     "mobx": "^4.1.0",
     "mobx-react": "^5.0.0",
