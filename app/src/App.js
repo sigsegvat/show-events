@@ -3,7 +3,8 @@ import 'gestalt/dist/gestalt.css'
 import { Box, Spinner, Text } from 'gestalt'
 import ShowItems from './ShowItems'
 import LoginForm from './LoginForm'
-import AwsApi from './AWS'
+import CognitoAuth from './aws/CognitoAuth'
+import DynamoDbApi from './aws/DynamoDb'
 
 const {Provider, Consumer} = React.createContext()
 export { Consumer }
@@ -21,9 +22,8 @@ export default class App extends Component {
     this.fetchResults = this.fetchResults.bind(this)
     this.onLoginSuccess = this.onLoginSuccess.bind(this)
 
-    if (this.state.initialized) {
-      this.fetchResults()
-    }
+    CognitoAuth.local().then(this.onLoginSuccess)
+
 
   }
 
@@ -41,12 +41,9 @@ export default class App extends Component {
     }
 
     let _app = this
-    let onRejected = (r) => {
 
-    }
-
-    let r1 = AwsApi.getEvents('ifttt_exited').then(onFulfilled, onRejected)
-    let r2 = AwsApi.getEvents('ifttt_entered').then(onFulfilled, onRejected)
+    let r1 = DynamoDbApi.getEvents('ifttt_exited').then(onFulfilled)
+    let r2 = DynamoDbApi.getEvents('ifttt_entered').then(onFulfilled)
 
     Promise.all([r1, r2]).then(([entered, exited]) => {
       _app.setState({

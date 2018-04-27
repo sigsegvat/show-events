@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Box, Button, Text, TextField, Label } from 'gestalt'
-import AwsApi from './AWS'
+import CognitoAuth from './aws/CognitoAuth'
 
 class LoginForm extends Component {
 
@@ -25,7 +25,7 @@ class LoginForm extends Component {
     e.preventDefault()
     let _form = this
     _form.setState({error: false})
-    AwsApi.auth(this.state.user, this.state.pw)
+    CognitoAuth.auth(this.state.user, this.state.pw)
       .then(() => {
         _form.setState({error: false})
         _form.props.onSuccess()
