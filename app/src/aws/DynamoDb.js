@@ -14,7 +14,7 @@ export class DynamoDbApi {
         },
         KeyConditionExpression: 'event_type = :v1',
         ScanIndexForward: false,
-        Limit: 10,
+        Limit: 15,
         TableName: 'events'
       }
       dynamodb.query(params, function (err, data) {
