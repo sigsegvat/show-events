@@ -2,7 +2,7 @@ import AWS from 'aws-sdk'
 
 export class DynamoDbApi {
 
-  getEvents (type) {
+  getEvents (type, limit=15) {
 
     return new Promise((resolve, reject) => {
       let dynamodb = new AWS.DynamoDB({maxRetries: 1})
@@ -14,7 +14,7 @@ export class DynamoDbApi {
         },
         KeyConditionExpression: 'event_type = :v1',
         ScanIndexForward: false,
-        Limit: 15,
+        Limit: limit,
         TableName: 'events'
       }
       dynamodb.query(params, function (err, data) {

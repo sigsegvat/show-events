@@ -1,82 +1,54 @@
 import React, { Component } from 'react'
 import 'gestalt/dist/gestalt.css'
-import { Box, Spinner, Text } from 'gestalt'
+import { Box, Spinner, Text, Tabs } from 'gestalt'
 import ShowItems from './ShowItems'
 import LoginForm from './LoginForm'
 import CognitoAuth from './aws/CognitoAuth'
-import DynamoDbApi from './aws/DynamoDb'
-
-const {Provider, Consumer} = React.createContext()
-export { Consumer }
+import ShowSensor from './ShowSensor'
 
 export default class App extends Component {
 
   constructor () {
     super()
-
     this.state = {
-      results: [],
       initialized: false,
+      activeTabIndex: 0
     }
-
-    this.fetchResults = this.fetchResults.bind(this)
-    this.onLoginSuccess = this.onLoginSuccess.bind(this)
-
     CognitoAuth.local().then(this.onLoginSuccess)
-
-
   }
 
-  onLoginSuccess() {
-    this.setState({initialized: true})
-    this.fetchResults()
-  }
+  onLoginSuccess = () => this.setState({initialized: true})
 
-  fetchResults () {
-
-    let onFulfilled = (r) => {
-      return r.Items.map((i) => {
-        return {event_time: parseInt(i.event_time.N), event_type: i.event_type.S}
-      })
-    }
-
-    let _app = this
-
-    let r1 = DynamoDbApi.getEvents('ifttt_exited').then(onFulfilled)
-    let r2 = DynamoDbApi.getEvents('ifttt_entered').then(onFulfilled)
-
-    Promise.all([r1, r2]).then(([entered, exited]) => {
-      _app.setState({
-        results: entered.concat(exited).sort((a,b)=>a.event_time-b.event_time)
-      })
-    })
-
+  tabChange = (e) => {
+    this.setState({activeTabIndex: e.activeTabIndex})
   }
 
   render () {
     return (
-      <Provider value={this.state}>
-        <Box padding={3} minWidth={200}>
-          {this.state.initialized &&
-          <Box>
-            <ShowItems/>
-            <Loading show={this.state.results.length === 0}/>
-          </Box>
-          }
-          {!this.state.initialized &&
-          <Box display="block">
-            <LoginForm onSuccess={this.onLoginSuccess}/>
-          </Box>
-          }
 
+      <Box padding={3} minWidth={200}>
+        {this.state.initialized &&
+        <Box>
+          <Tabs
+            tabs={[{text: 'Work'}, {text: 'Sensor1'}]}
+            activeTabIndex={this.state.activeTabIndex}
+            onChange={this.tabChange}
+          />
+          {this.state.activeTabIndex === 0 && <ShowItems/>}
+          {this.state.activeTabIndex === 1 && <ShowSensor/>}
         </Box>
-      </Provider>
+        }
+        {!this.state.initialized &&
+        <Box display="block">
+          <LoginForm onSuccess={this.onLoginSuccess}/>
+        </Box>
+        }
+
+      </Box>
+
 
     )
   }
 }
 
-let Loading = (props) => <Box display={props.show ? 'flex' : 'none'} alignItems="center" justifyContent="center">
-  <Box padding={2}><Text size="lg">Loading</Text></Box>
-  <Spinner show={true} accessibilityLabel="spinner"/>
-</Box>
+
