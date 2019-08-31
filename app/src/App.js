@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import 'gestalt/dist/gestalt.css'
-import { Box, Spinner, Text, Tabs } from 'gestalt'
+import { Box, Tabs } from 'gestalt'
 import ShowItems from './ShowItems'
 import LoginForm from './LoginForm'
 import CognitoAuth from './aws/CognitoAuth'

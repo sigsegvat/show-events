@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import DynamoDbApi from './aws/DynamoDb'
-import { Box, SelectList, Text, Tabs } from 'gestalt'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+import { Box, SelectList } from 'gestalt'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import moment from 'moment/moment'
 
 export default class ShowSensor extends Component {
