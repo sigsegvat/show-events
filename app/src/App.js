@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import 'gestalt/dist/gestalt.css'
-import { Box, Tabs } from 'gestalt'
+import { Box } from 'gestalt'
 import ShowItems from './ShowItems'
 import LoginForm from './LoginForm'
 import CognitoAuth from './aws/CognitoAuth'
-import ShowSensor from './ShowSensor'
 
 export default class App extends Component {
 
@@ -29,13 +28,7 @@ export default class App extends Component {
       <Box padding={3} minWidth={200}>
         {this.state.initialized &&
         <Box>
-          <Tabs
-            tabs={[{text: 'Work'}, {text: 'Sensor1'}]}
-            activeTabIndex={this.state.activeTabIndex}
-            onChange={this.tabChange}
-          />
-          {this.state.activeTabIndex === 0 && <ShowItems/>}
-          {this.state.activeTabIndex === 1 && <ShowSensor/>}
+           <ShowItems/>
         </Box>
         }
         {!this.state.initialized &&
