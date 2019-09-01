@@ -1,56 +1,44 @@
 import React, { Component } from 'react'
-import { Box, Button, Text, TextField, Label } from 'gestalt'
-import CognitoAuth from './aws/CognitoAuth'
+import { Box } from 'gestalt'
+import * as querystring from 'querystring'
+import AWS from 'aws-sdk'
 
 class LoginForm extends Component {
 
-  constructor (props) {
+ google_auth_params = {
+    client_id: "587662038991-qg232e5ne00qtpnss1f7sq17bgmee59l.apps.googleusercontent.com",
+    redirect_uri: "http://sig.segv.at/timeio/",
+    response_type: "token id_token",
+    nonce: Math.random(),
+    scope: "openid profile email"
+  }
+  
+  constructor(props) {
     super(props)
-    this.state = {user: '', pw: ''}
+    AWS.config.region = 'eu-central-1';
+    const params = querystring.parse(window.location.hash);
+    if (params['id_token']) {
+      AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: 'eu-central-1:c78ccdae-c5b7-4b32-84b3-dfe28f4bb74f',
+        Logins: {
+          'accounts.google.com': params['id_token']
+        }
+      });
 
-    this.onSubmit = this.onSubmit.bind(this)
-    this.onUserChange = this.onUserChange.bind(this)
-    this.onPwChange = this.onPwChange.bind(this)
+      AWS.config.credentials.get(function () {
+        if(AWS.config.credentials){
+          props.onSuccess()
+        }
+      });
+    }
   }
 
-  onUserChange (e) {
-    this.setState({user: e.value})
-  }
-
-  onPwChange (e) {
-    this.setState({pw: e.value})
-  }
-
-  onSubmit (e) {
-    e.preventDefault()
-    let _form = this
-    _form.setState({error: false})
-    CognitoAuth.auth(this.state.user, this.state.pw)
-      .then(() => {
-        _form.setState({error: false})
-        _form.props.onSuccess()
-      })
-      .catch(() => {
-        _form.setState({error: true})
-        setTimeout(() => _form.setState({error: false}), 2000)
-      })
-  }
-
-  render () {
+  render() {
     return (
       <Box>
-        <form action="#" onSubmit={this.onSubmit}>
-          <Label htmlFor="user"><Text>User</Text></Label>
-          <TextField id="user" type="text" value={this.state.user} onChange={this.onUserChange}/>
-          <Label htmlFor="pw"><Text>Password</Text></Label>
-          <TextField id="pw" type="password" value={this.state.pw} onChange={this.onPwChange}/>
-          <Box padding={1}>
-            {this.state.error && <Box color="red" shape="rounded" padding={1}>
-              <Text color="white" bold={true}>Invalid Credentials</Text></Box>}
-
-          </Box>
-          <Box paddingY={2}><Button type="submit" text="Save"/></Box>
-        </form>
+        <a href={"https://accounts.google.com/o/oauth2/v2/auth?" +
+        querystring.stringify(this.google_auth_params)}>
+          Login with Google</a>
       </Box>
     )
   }

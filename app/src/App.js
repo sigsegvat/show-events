@@ -3,7 +3,6 @@ import 'gestalt/dist/gestalt.css'
 import { Box } from 'gestalt'
 import ShowItems from './ShowItems'
 import LoginForm from './LoginForm'
-import CognitoAuth from './aws/CognitoAuth'
 
 export default class App extends Component {
 
@@ -13,7 +12,6 @@ export default class App extends Component {
       initialized: false,
       activeTabIndex: 0
     }
-    CognitoAuth.local().then(this.onLoginSuccess)
   }
 
   onLoginSuccess = () => this.setState({initialized: true})
