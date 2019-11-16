@@ -1,45 +1,77 @@
 import React, { Component } from 'react'
-import 'gestalt/dist/gestalt.css'
-import { Box } from 'gestalt'
 import ShowItems from './ShowItems'
 import LoginForm from './LoginForm'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link, Redirect, withRouter
+} from "react-router-dom";
+import * as querystring from 'querystring'
 
-export default class App extends Component {
+import SecurityContext from './SecurityContext'
 
-  constructor () {
-    super()
-    this.state = {
-      initialized: false,
-      activeTabIndex: 0
+class App extends Component {
+
+  constructor(props) {
+    super(props);
+    var hash = querystring.parse(this.props.location.hash);
+    
+    if (hash['#id_token']) {
+      this.state = {
+        loggedIn: true,
+        accessToken: hash['#id_token']
+      }
+      this.props.history.push("/")
+    } else {
+      this.state = {
+        loggedIn: false
+      }
+      this.props.history.push("/login")
     }
+    
+
   }
 
-  onLoginSuccess = () => this.setState({initialized: true})
-
-  tabChange = (e) => {
-    this.setState({activeTabIndex: e.activeTabIndex})
-  }
-
-  render () {
+  render() {
+   
     return (
-
-      <Box padding={3} minWidth={200}>
-        {this.state.initialized &&
-        <Box>
-           <ShowItems/>
-        </Box>
+      <div>
+       
+        {this.state.loggedIn &&
+          <nav>
+            <ul>
+              <li><Link to="/door_tag">door tag</Link>
+              </li>
+              <li> <Link to="/work">work log</Link>
+              </li>
+            </ul>
+          </nav>
         }
-        {!this.state.initialized &&
-        <Box display="block">
-          <LoginForm onSuccess={this.onLoginSuccess}/>
-        </Box>
-        }
+        <div>
+        <SecurityContext.Provider value={this.state.accessToken}>
+          <Switch>
+            <Route path="/login">
+              <LoginForm onLoggedIn={this.onLoggedIn} />
+            </Route>
+            <Route path="/door_tag">
+              <ShowItems eventType="door_tag" />
+            </Route>
+            <Route path="/work">
+              <ShowItems eventType="ifttt_entered" />
+              <ShowItems eventType="ifttt_exited" />
+            </Route>
 
-      </Box>
+          </Switch>
+          </SecurityContext.Provider>
+        </div>
+      </div>
 
 
     )
   }
 }
 
+var AppWithRouter = withRouter(App);
 
+export default ((props) => <Router><AppWithRouter /></Router>)
