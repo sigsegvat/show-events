@@ -4,7 +4,7 @@ import SecurityContext from './SecurityContext'
 import fetchEvents from './eventApi'
 
 
-class ShowItems extends Component {
+class ShowWorkItems extends Component {
 
   constructor(props) {
     super(props)
@@ -12,9 +12,16 @@ class ShowItems extends Component {
   }
 
   componentDidMount(){
-    fetchEvents(this.props.eventType, this.context,20).then((r) => {
-      this.setState(r);
-    });
+    let entered = fetchEvents("ifttt_entered", this.context,20)
+    let exited = fetchEvents("ifttt_exited", this.context,20)
+    
+    Promise.all([entered, exited]).then((result)=> {
+        let events = result[0].result.concat(result[1].result).sort((a,b) => a.event_time - b.event_time)
+        this.setState({
+          result: events
+        })
+    })
+   
   }
 
   render() {
@@ -42,6 +49,6 @@ class ShowItems extends Component {
 
 }
 
-ShowItems.contextType = SecurityContext
+ShowWorkItems.contextType = SecurityContext
 
-export default ShowItems;
+export default ShowWorkItems;

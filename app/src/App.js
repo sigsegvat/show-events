@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import ShowItems from './ShowItems'
 import LoginForm from './LoginForm'
+import LinkBar from './LinkBar'
+import ShowWorkItems from './ShowWorkTimes'
 import {
   BrowserRouter as Router,
   Switch,
@@ -16,7 +18,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     var hash = querystring.parse(this.props.location.hash);
-    
+
     if (hash['#id_token']) {
       this.state = {
         loggedIn: true,
@@ -38,16 +40,7 @@ class App extends Component {
     return (
       <div>
        
-        {this.state.loggedIn &&
-          <nav>
-            <ul>
-              <li><Link to="/door_tag">door tag</Link>
-              </li>
-              <li> <Link to="/work">work log</Link>
-              </li>
-            </ul>
-          </nav>
-        }
+        <LinkBar loggedIn={this.state.loggedIn} />
         <div>
         <SecurityContext.Provider value={this.state.accessToken}>
           <Switch>
@@ -55,11 +48,10 @@ class App extends Component {
               <LoginForm onLoggedIn={this.onLoggedIn} />
             </Route>
             <Route path="/door_tag">
-              <ShowItems eventType="door_tag" />
+              <ShowItems title="ruuvi tag" eventType="door_tag" key="door" />
             </Route>
             <Route path="/work">
-              <ShowItems eventType="ifttt_entered" />
-              <ShowItems eventType="ifttt_exited" />
+               <ShowWorkItems/>
             </Route>
 
           </Switch>

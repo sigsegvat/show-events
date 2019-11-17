@@ -11,9 +11,6 @@ class LoginForm extends Component {
     scope: "openid profile email"
   }
   
-  constructor(props) {
-    super(props)
-  }
 
   render() {
     return (
