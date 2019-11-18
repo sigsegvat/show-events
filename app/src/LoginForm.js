@@ -1,5 +1,22 @@
 import React, { Component } from 'react'
+import styled from 'styled-components'
 import * as querystring from 'querystring'
+
+const LoginLink = styled.a` 
+    color: #FF0095;
+    font-size:14px;
+    background-color: #73CAD1;
+    padding: 20px;
+    :hover {
+      background-color: #FFF29C;
+    }
+`
+
+const Login = styled.div` 
+  margin: 20% auto;
+  text-align: center;
+  
+`
 
 class LoginForm extends Component {
 
@@ -14,11 +31,10 @@ class LoginForm extends Component {
 
   render() {
     return (
-      <div>
-        <a href={"https://sig-segv-at.auth.eu-west-1.amazoncognito.com/login?" +
-        querystring.stringify(this.auth_params)}>
-          Login</a>
-      </div>
+      <Login>
+        <LoginLink href={"https://sig-segv-at.auth.eu-west-1.amazoncognito.com/login?" +
+        querystring.stringify(this.auth_params)}>Login</LoginLink>
+      </Login>
     )
   }
 

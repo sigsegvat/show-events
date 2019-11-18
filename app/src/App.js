@@ -24,7 +24,7 @@ class App extends Component {
         loggedIn: true,
         accessToken: hash['#id_token']
       }
-      this.props.history.push("/")
+      this.props.history.push("/work")
     } else {
       this.state = {
         loggedIn: false

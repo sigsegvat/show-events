@@ -1,40 +1,39 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import moment from 'moment'
+import styled from 'styled-components'
 import SecurityContext from './SecurityContext'
 import fetchEvents from './eventApi'
 
 
-class ShowWorkItems extends Component {
+const Thead = (props) => <thead>
+  <tr>
+    <td>{props.h1}</td> <td>{props.h2}</td>
+  </tr>
+</thead>
 
-  constructor(props) {
-    super(props)
-    this.state = { result: [] }
-  }
+function ShowWorkItems(props) {
+  const [events, setEvents] = useState([]);
+  const securityContext = useContext(SecurityContext);
+  useEffect(() => {
+    if (events.length == 0) {
+      let entered = fetchEvents("ifttt_entered", securityContext, 20)
+      let exited = fetchEvents("ifttt_exited", securityContext, 20)
 
-  componentDidMount(){
-    let entered = fetchEvents("ifttt_entered", this.context,20)
-    let exited = fetchEvents("ifttt_exited", this.context,20)
-    
-    Promise.all([entered, exited]).then((result)=> {
-        let events = result[0].result.concat(result[1].result).sort((a,b) => a.event_time - b.event_time)
-        this.setState({
-          result: events
-        })
-    })
-   
-  }
+      Promise.all([entered, exited]).then((result) => {
+        let events = result[0].result.concat(result[1].result).sort((a, b) => a.event_time - b.event_time)
+        setEvents(events)
+      })
+    }
+  })
 
-  render() {
-    return (<div><h3>{this.props.title}</h3><table>
-      <thead>
-        <tr>
-          <td>type</td> <td>time</td>
-          </tr>
-      </thead>
+
+  return (<div>
+    <table>
+      <Thead h1="type" h2="time" />
       <tbody>
 
         {
-          this.state.result.map(v => {
+          events.map(v => {
 
             return <tr key={v.event_time}>
               <td>{v.event_type}</td>
@@ -45,10 +44,8 @@ class ShowWorkItems extends Component {
         }
       </tbody>
     </table></div>)
-  }
+
 
 }
-
-ShowWorkItems.contextType = SecurityContext
 
 export default ShowWorkItems;

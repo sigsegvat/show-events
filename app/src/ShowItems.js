@@ -18,7 +18,7 @@ class ShowItems extends Component {
   }
 
   render() {
-    return (<div><h3>{this.props.title}</h3><table>
+    return (<div><table>
       <thead>
         <tr>
           <td>type</td> <td>time</td>
