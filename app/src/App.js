@@ -18,7 +18,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     var hash = querystring.parse(this.props.location.pathname);
-    const { match, location, history } = this.props;
 
     if (hash['/id_token']) {
       this.state = {
