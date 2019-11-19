@@ -7,7 +7,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link, Redirect, withRouter
+ withRouter
 } from "react-router-dom";
 import * as querystring from 'querystring'
 
@@ -24,8 +24,15 @@ class App extends Component {
         loggedIn: true,
         accessToken: hash['#id_token']
       }
+      sessionStorage.setItem("accessToken",this.state.accessToken)
       this.props.history.push("/work")
-    } else {
+    } else if(sessionStorage.getItem("accessToken")){
+      this.state = {
+        loggedIn: true,
+        accessToken: sessionStorage.getItem("accessToken")
+      }
+    } 
+    else {
       this.state = {
         loggedIn: false
       }
