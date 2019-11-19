@@ -28,6 +28,7 @@ let LinkBar = (props) => <React.Fragment> {props.loggedIn &&
     <NavList>
       <NavItem><StyledLink to="/door_tag">door tag</StyledLink></NavItem>
       <NavItem><StyledLink to="/work">work log</StyledLink></NavItem>
+      <NavItem><StyledLink to="/" onClick={()=>sessionStorage.clear()}>logout</StyledLink></NavItem>
     </NavList>
   </nav>
 }</React.Fragment>

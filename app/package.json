@@ -23,7 +23,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "s3": "aws s3 sync ./build s3://sig.segv.at/timeio/"
+    "deploy": "npm run s3 && npm run invalidate-cache",
+    "s3": "aws s3 sync ./build s3://sig.segv.at/timeio/",
+    "invalidate-cache" : "aws cloudfront create-invalidation --distribution-id EPUQSD2O287Q7 --paths '/*'"
   },
   "browserslist": [
     ">0.2%",

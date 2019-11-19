@@ -4,7 +4,7 @@ import LoginForm from './LoginForm'
 import LinkBar from './LinkBar'
 import ShowWorkItems from './ShowWorkTimes'
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
  withRouter
@@ -17,12 +17,13 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    var hash = querystring.parse(this.props.location.hash);
+    var hash = querystring.parse(this.props.location.pathname);
+    const { match, location, history } = this.props;
 
-    if (hash['#id_token']) {
+    if (hash['/id_token']) {
       this.state = {
         loggedIn: true,
-        accessToken: hash['#id_token']
+        accessToken: hash['/id_token']
       }
       sessionStorage.setItem("accessToken",this.state.accessToken)
       this.props.history.push("/work")

@@ -22,7 +22,7 @@ class LoginForm extends Component {
 
  auth_params = {
     client_id: "56e5k087pt0ukianqubsgn0l91",
-    redirect_uri: "http://localhost:3000/",
+    redirect_uri: /**"http://localhost:3000/",*/"https://d3vsgzl9kzxq91.cloudfront.net/",
     response_type: "token",
     nonce: Math.random(),
     scope: "openid profile email"
