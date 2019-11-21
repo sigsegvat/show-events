@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#000000">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
 
     <title>TimeIO</title>
   </head>
@@ -12,7 +11,14 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
-    <div id="root"></div>
+    <script>
+        window.location.hash.split("&").map((v)=>{
+           let [key,value] =  v.split("=");
+           if(key==="#id_token"){
+              window.opener.postMessage(value)
+           }
+        })
+    </script>
 
   </body>
 </html>
