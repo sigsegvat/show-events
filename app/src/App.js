@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ShowItems from './ShowItems'
+import ShowTemp from './ShowTemp'
 import LoginForm from './LoginForm'
 import LinkBar from './LinkBar'
 import ShowWorkItems from './ShowWorkTimes'
@@ -56,7 +56,7 @@ class App extends Component {
                 <LoginForm onLoggedIn={this.onLoggedIn} />
               </Route>
               <Route path="/door_tag">
-                <ShowItems title="ruuvi tag" eventType="door_tag" key="door" />
+                <ShowTemp/>
               </Route>
               <Route path="/work">
                 <ShowWorkItems />
