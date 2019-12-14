@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="theme-color" content="#000000">
 
     <title>TimeIO</title>
-  </head>
-  <body>
+</head>
+
+<body>
     <noscript>
-      You need to enable JavaScript to run this app.
+        You need to enable JavaScript to run this app.
     </noscript>
     <script>
-        window.location.hash.split("&").map((v)=>{
-           let [key,value] =  v.split("=");
-           if(key==="#id_token"){
-              window.opener.postMessage(value)
-           }
+        window.location.hash.split("&").map(function (v) {
+            var [key, value] = v.split("=");
+            if (key === "#id_token") {
+                window.opener.postMessage(value,'*')
+            }
         })
     </script>
 
-  </body>
+</body>
+
 </html>
