@@ -25,7 +25,8 @@ class LoginForm extends Component {
 
   auth_params = {
     client_id: "56e5k087pt0ukianqubsgn0l91",
-    redirect_uri: "https://d3vsgzl9kzxq91.cloudfront.net/login.html", // "http://localhost:3000/login.html",
+    redirect_uri: "https://d3vsgzl9kzxq91.cloudfront.net/login.html", 
+    //redirect_uri: "http://localhost:3000/login.html",
     response_type: "token",
     nonce: Math.random(),
     scope: "openid profile email"
@@ -34,10 +35,10 @@ class LoginForm extends Component {
   url = "https://sig-segv-at.auth.eu-west-1.amazoncognito.com/login?" +
     querystring.stringify(this.auth_params);
 
-  onLoginClick =  (e)=> {
+  onLoginClick = (e) => {
     console.log(e);
     let w = window.open(this.url, "login")
-    window.addEventListener("message", (m)=>{
+    window.addEventListener("message", (m) => {
       this.props.onLoggedIn(m.data)
       w.close()
     }, false);

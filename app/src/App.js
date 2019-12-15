@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import ShowTemp from './ShowTemp'
+import ShowGraphs from './ShowGraphs'
 import LoginForm from './LoginForm'
 import LinkBar from './LinkBar'
 import ShowWorkItems from './ShowWorkTimes'
@@ -56,7 +56,7 @@ class App extends Component {
                 <LoginForm onLoggedIn={this.onLoggedIn} />
               </Route>
               <Route path="/door_tag">
-                <ShowTemp/>
+                <ShowGraphs/>
               </Route>
               <Route path="/work">
                 <ShowWorkItems />
