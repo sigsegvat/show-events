@@ -26,7 +26,7 @@ let LineChart = (props) => {
 let DaySelect = (props) => {
     let Wrapper = styled.div`
         display: grid;
-        grid-template-columns: repeat(5,70px);
+        grid-template-columns: repeat(5,90px);
         grid-template-rows: 40px;
         grid-column-gap: 10px;
         grid-row-gap: 15px;

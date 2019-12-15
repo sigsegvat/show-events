@@ -12,7 +12,7 @@ const Grid = styled.div`
 `
 
 const Box = styled.div`
-  border: 1px solid;
+  border: 1px dotted;
   padding: 5px 3px;
   display:block;
   grid-column-start: ${props => props.dayOfWeek}
