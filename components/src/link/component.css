@@ -1,0 +1,9 @@
+@import "../common.css";
+
+ul {
+    list-style: none;
+    font-size: 12px;
+}
+li {
+    margin: 5px;
+}
